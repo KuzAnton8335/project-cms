@@ -15,6 +15,9 @@ const btnDel = document.querySelector('.table__btn_del');
 
 
 
+
+
+
 const createRow = (obj) => {
 	const row = document.createElement('tr');
 	row.classList.add('table__row');
@@ -128,7 +131,7 @@ tableBody.addEventListener('click', (e) => {
 	const target = e.target;
 	if (target.closest('.table__btn_del')) {
 		const row = target.closest('.table__row');
-		const id = row.querySelector('.table__cell').textContent;
+		const id = row.querySelector('.table__cell').value;
 		row.remove();
 		const index = goods.findIndex((obj) => obj.id === parseInt(id));
 		if (index !== -1) {
@@ -152,107 +155,67 @@ modalCheckbox.addEventListener('change', () => {
 modalForm.addEventListener('submit', (e) => {
 	e.preventDefault();
 
-	const id = Math.floor(Math.random() * 1000000);
-	const title = modalTitle.value;
-	const category = modalCategory.value;
-	const units = modalUnits.value;
-	const count = parseInt(modalCount.value);
-	const price = parseFloat(modalPrice.value);
+	const name = modalForm.name.value;
+	const category = modalForm.category.value;
+	const units = modalForm.units.value;
+	const count = modalForm.count.value;
+	const price = modalForm.price.value;
 
-	const newProduct = {
-		id,
-		title,
-		category,
-		units,
-		count,
-		price
-	};
+	const newRow = document.createElement('tr');
+	newRow.classList.add('table__row');
+	newRow.innerHTML = `
+	<td class="table__cell">${tableBody.children.length + 1}</td>
+	<td class="table__cell table__cell_left table__cell_name">
+		<span class="table__cell-id">id: ${generateRandomId()}</span>
+		${name}
+ 	</td>
+	 <td class="table__cell table__cell_left">${category}</td>
+    <td class="table__cell">${units}</td>
+    <td class="table__cell">${count}</td>
+    <td class="table__cell">$${price}</td>
+    <td class="table__cell">$${count * price}</td>
+    <td class="table__cell table__cell_btn-wrapper">
+      <button class="table__btn table__btn_pic"></button>
+      <button class="table__btn table__btn_edit"></button>
+      <button class="table__btn table__btn_del"></button>
+    </td>`;
 
-	const newRow = createRow(newProduct);
 	tableBody.appendChild(newRow);
-
-	goods.push(newProduct);
-
-	modalTitle.value = '';
-	modalCategory.value = '';
-	modalUnits.value = '';
-	modalCount.value = '';
-	modalPrice.value = '';
-
-	overlay.classList.remove('active');
-
+	modalForm.reset();
 });
 
+const generateRandomId = () => {
+	return Math.floor(Math.random() * 10000000000000);
+}
+const vendorCodeIdSpan = document.querySelector('.vendor-code__id');
+vendorCodeIdSpan.textContent = generateRandomId();
 
-// <input type="text" class="modal__title" required>
-{/* <input type="text" class="modal__category" required>
-<input type="text" class="modal__units" required>
-<input type="number" class="modal__count" required>
-<input type="number" class="modal__price" required>
-<input type="file" class="modal__image"> */}
 
-// <input type="text" class="modal__title" required>
-{/* <input type="text" class="modal__category" required>
-<input type="text" class="modal__units" required>
-<input type="number" class="modal__count" required>
-<input type="number" class="modal__price" required>
-<input type="file" class="modal__image"></input> */}
 
-// panelAddGoods.addEventListener('click', () => {
-// 	// Generate a random ID
-// 	const randomId = Math.floor(Math.random() * 1000000);
 
-// 	// Fill the span element with the random ID
-// 	const spanElement = document.querySelector('.vendor-code__id');
-// 	spanElement.textContent = randomId;
+const countInput = document.querySelector('#count');
+const priceInput = document.querySelector('#price');
+const totalPriceOutput = document.querySelector('.modal__total-price');
 
-// 	// Open the modal
-// 	overlay.classList.add('active');
-//  });
+let calculateTotalPrice = () => {
+	const count = parseInt(countInput.value);
+	const price = parseFloat(priceInput.value);
+	const totalPrice = count * price;
+	totalPriceOutput.textContent = `$ ${totalPrice.toFixed(2)}`;
+}
+countInput.addEventListener('change', calculateTotalPrice);
+priceInput.addEventListener('change', calculateTotalPrice);
 
-// modalInputDiscount.addEventListener('change', () => {
-// 	const count = parseInt(modalCount.value);
-// 	const price = parseFloat(modalPrice.value);
-// 	const discount = modalInputDiscount.value ? parseFloat(modalInputDiscount.value) : 0;
 
-// 	const totalCost = (price * count) * (1 - discount / 100);
 
-// 	// Update the total cost element in the modal
-// 	const totalCostElement = document.querySelector('.modal__total-cost');
-// 	totalCostElement.textContent = `$${totalCost.toFixed(2)}`;
-//  });
+const tableRows = document.querySelectorAll('.table__body tr');
+let totalPrice = 0;
+tableRows.forEach((row) => {
 
-// const updateTotalCost = () => {
-// 	const totalCost = goods.reduce((sum, product) => sum + (product.price * product.count), 0);
-
-// 	// Update the total cost element above the table
-// 	const totalCostElement = document.querySelector('.table__total-cost');
-// 	totalCostElement.textContent = `$${totalCost.toFixed(2)}`;
-//  };
-
-//  // Call the updateTotalCost function initially
-//  updateTotalCost();
-
-// const createRow = (obj) => {
-//   const row = document.createElement('tr');
-//   row.classList.add('table__row');
-//   row.innerHTML = `
-//     <td class="table__cell">${obj.id}</td>
-//     <td class="table__cell table__cell_left table__cell_name" data-id="24601654816512">
-//       <span class="table__cell-id"></span>
-//       ${obj.title}
-//     </td>
-//     <td class="table__cell table__cell_left">${obj.category}</td>
-//     <td class="table__cell">${obj.units}</td>
-//     <td class="table__cell">${obj.count}</td>
-//     <td class="table__cell">$${obj.price}</td>
-//     <td class="table__cell">$${obj.price * obj.count}</td>
-//     <td class="table__cell table__cell_btn-wrapper">
-//       <button class="table__btn table__btn_pic"></button>
-//       <button class="table__btn table__btn_edit"></button>
-//       <button class="table__btn table__btn_del"></button>
-//     </td>
-//   `;
-
-//   return row;
-// };
+	const price = parseFloat(row.querySelector('.table__cell:nth-child(6)').textContent.replace('$', ''));
+	const quantity = parseInt(row.querySelector('.table__cell:nth-child(5)').textContent);
+	const subtotal = price * quantity;
+	totalPrice += subtotal;
+});
+const totalPriceElement = document.querySelector('.cms__total-price');
+totalPriceElement.textContent = `$ ${totalPrice.toFixed(2)}`;
