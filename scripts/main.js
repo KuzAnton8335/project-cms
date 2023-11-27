@@ -12,12 +12,6 @@ const tableBody = document.querySelector('.table__body');
 const btnDel = document.querySelector('.table__btn_del');
 
 
-
-
-
-
-
-
 const createRow = (obj) => {
 	const row = document.createElement('tr');
 	row.classList.add('table__row');
