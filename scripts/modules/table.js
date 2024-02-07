@@ -1,10 +1,10 @@
-import { goods } from './data.js';
-import { generateRandomId } from './utils.js';
+
 
 export const createRow = (obj) => {
-	const row = document.createElement('tr');
-	row.classList.add('table__row');
-	row.innerHTML = `
+  const url = "../../img/image-800x600.jpg";
+  const row = document.createElement('tr');
+  row.classList.add('table__row');
+  row.innerHTML = `
 	<td class="table__cell">${obj.id}</td>
       <td
       	class="table__cell table__cell_left table__cell_name"
@@ -18,18 +18,29 @@ export const createRow = (obj) => {
                   <td class="table__cell">$${obj.price}</td>
                   <td class="table__cell">$${obj.price * obj.count}</td>
                   <td class="table__cell table__cell_btn-wrapper">
-                    <button class="table__btn table__btn_pic"></button>
+                    <button class="table__btn table__btn_pic" data-pic=${url}></button>
                     <button class="table__btn table__btn_edit"></button>
                     <button class="table__btn table__btn_del"></button>
                   </td>
 	`
-	return row;
+  document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('table__btn_pic')) {
+      const picUrl = e.target.getAttribute('data-pic');
+      const windowWidth = 800;
+      const windowHeight = 600;
+      const leftPosition = (screen.width - windowWidth) / 2;
+      const topPosition = (screen.height - windowHeight) / 2;
+      window.open(picUrl, 'picWindow', 'width=' + windowWidth + ', height=' + windowHeight + ', top=' + topPosition + ', left=' + leftPosition);
+    }
+  });
+
+  return row;
 }
 
 export const renderGoods = (goods) => {
-	const table = document.querySelector('.table__body');
-	goods.forEach((obj) => {
-		const row = createRow(obj);
-		table.appendChild(row);
-	});
+  const table = document.querySelector('.table__body');
+  goods.forEach((obj) => {
+    const row = createRow(obj);
+    table.appendChild(row);
+  });
 }
